@@ -6,9 +6,14 @@
 ```
 vagrant up
 ```
+or if u want to set the nodes count.
+```
+NODE_COUNT=4 vagrant up
+```
 4. connect server 
 ```
 vagrant ssh server-1
+vagrant ssh node-0
 ```
 
 5. test

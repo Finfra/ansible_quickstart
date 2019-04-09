@@ -5,6 +5,7 @@
 VAGRANTFILE_API_VERSION = "2"
 NODE_COUNT = 4
 SUBNET="172.22.101"
+NODE_COUNT = ENV['NODE_COUNT'].to_i > 0  ? ENV['NODE_COUNT'].to_i : 3
 
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
