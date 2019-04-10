@@ -21,3 +21,6 @@ vagrant ssh node-0
 cat /etc/hosts
 ansible --version
 ```
+
+
+* 주의 : Subnet이 맞지 않을 경우 Vagrant파일에서 Subnet ip를 수정해 주세요. 
