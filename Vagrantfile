@@ -3,9 +3,17 @@
 
 
 VAGRANTFILE_API_VERSION = "2"
-NODE_COUNT = 4
+# NODE_COUNT = 4
 SUBNET="172.22.101"
+puts "------------------------------"
 NODE_COUNT = ENV['NODE_COUNT'].to_i > 0  ? ENV['NODE_COUNT'].to_i : 3
+sPath=ENV['SHARE_PATH']
+if sPath.to_s.length > 0 
+    puts sPath
+else
+    puts "Usage : SHARE_PATH=$(pwd)/df vagrant up"
+end
+puts "------------------------------"
 
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -16,6 +24,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.provision "shell", path: "./vagrant/vmhost.sh", args: ""
     config.vm.provision "shell", inline: "yum install -y ansible", args: ""
     config.vm.provision "shell", inline: "echo #{SUBNET}.1 server-1 >> /etc/hosts", args: ""
+    if sPath.to_s.length > 0 
+      config.vm.synced_folder sPath, "/home/vagrant/forVm"
+    end
+
     NODE_COUNT.times do |i|
       config.vm.provision "shell", inline: "echo #{SUBNET}.1#{i} node-#{i} >> /etc/hosts", args: ""
     end
