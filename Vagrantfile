@@ -11,7 +11,10 @@ sPath=ENV['SHARE_PATH']
 if sPath.to_s.length > 0 
     puts sPath
 else
-    puts "Usage : SHARE_PATH=$(pwd)/df vagrant up"
+    puts "Usage :
+              Bash     : SHARE_PATH=$(pwd)/df vagrant up
+              Win(cmd) : set SHARE_PATH=$(pwd)/df vagrant up
+              "
 end
 puts "------------------------------"
 
