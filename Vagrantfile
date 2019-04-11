@@ -6,7 +6,7 @@ VAGRANTFILE_API_VERSION = "2"
 # NODE_COUNT = 4
 SUBNET="172.22.101"
 # puts "------------------------------"
-# NODE_COUNT = ENV['NODE_COUNT'].to_i > 0  ? ENV['NODE_COUNT'].to_i : 3
+NODE_COUNT = ENV['NODE_COUNT'].to_i > 0  ? ENV['NODE_COUNT'].to_i : 3
 # sPath=ENV['SHARE_PATH']
 # if sPath.to_s.length > 0 
 #     puts "Shared folder is #{sPath}"
