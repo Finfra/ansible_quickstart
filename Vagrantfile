@@ -58,7 +58,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         inline: "echo hello from node #{i}"
       config.vm.hostname = "centos7box#{i}"
       config.vm.network :private_network, ip: "#{SUBNET}.1#{i}"
-      config.vm.provision "shell", path: "./vagrant/vmhost.sh", args: ""
+      config.vm.provision "shell", path: "./script/vmhost.sh", args: ""
       config.vm.box = "centos/7"
       config.vm.provision "shell", inline: "echo #{SUBNET}.1 server-1 >> /etc/hosts", args: ""
       NODE_COUNT.times do |i|

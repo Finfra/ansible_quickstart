@@ -4,12 +4,11 @@
 2. install vagrant
 3. execute this commant
 ```
-cd vagrant
 vagrant up
 ```
 or if u want to set the nodes count.
 ```
-NODE_COUNT=4 vagrant up
+SHARE_PATH=../df NODE_COUNT=4 vagrant up
 ```
 4. connect server 
 ```
@@ -24,4 +23,5 @@ ansible --version
 ```
 
 
-* 주의 : Subnet이 맞지 않을 경우 Vagrant파일에서 Subnet ip를 수정해 주세요. 
+* Note 1: If the subnet does not match, modify the subnet ip in the vagrant file.
+* Note 2: The SHARE_PATH Option has not been tested on Windows.
