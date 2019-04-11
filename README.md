@@ -4,6 +4,7 @@
 2. install vagrant
 3. execute this commant
 ```
+cd vagrant
 vagrant up
 ```
 or if u want to set the nodes count.
