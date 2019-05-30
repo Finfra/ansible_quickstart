@@ -4,10 +4,10 @@
 
 VAGRANTFILE_API_VERSION = "2"
 # NODE_COUNT = 4
-SUBNET="172.22.101"
+SUBNET="172.3.4"
 # puts "------------------------------"
-NODE_COUNT = ENV['NODE_COUNT'].to_i > 0  ? ENV['NODE_COUNT'].to_i : 3
-# sPath=ENV['SHARE_PATH']
+NODE_COUNT = ENV['NODE_COUNT'].to_i > 0  ? ENV['NODE_COUNT'].to_i : 4
+sPath=ENV['SHARE_PATH']
 # if sPath.to_s.length > 0 
 #     puts "Shared folder is #{sPath}"
 # else
@@ -27,52 +27,45 @@ NODE_COUNT = ENV['NODE_COUNT'].to_i > 0  ? ENV['NODE_COUNT'].to_i : 3
 
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.define "server-1" do |server|
-    config.vm.hostname = "Server"
-    config.vm.network :private_network, ip: "#{SUBNET}.1"
-    config.vm.box = "centos/7"
-    config.vm.provision "shell", path: "./script/vmhost.sh", args: ""
-    config.vm.provision "shell", inline: "yum install -y ansible", args: ""
-    config.vm.provision "shell", inline: "echo #{SUBNET}.1 server-1 >> /etc/hosts", args: ""
-    # if sPath.to_s.length > 0 
-    #   config.vm.synced_folder sPath, "/home/vagrant/forVm"
-    # end
-
-    NODE_COUNT.times do |i|
-      config.vm.provision "shell", inline: "echo #{SUBNET}.1#{i} node-#{i} >> /etc/hosts", args: ""
+  config.vm.box = "centos/7"
+  config.vm.synced_folder ".", "/vagrant", type: "nfs", nfs_udp: false
+  config.vm.provision "shell", path: "./script/vmhost.sh" 
+  config.vm.provision "shell", inline: "echo #{SUBNET}.10 s1 >> /etc/hosts" 
+  (1..NODE_COUNT).each do |i|
+    config.vm.provision "shell", inline: "echo #{SUBNET}.1#{i} n#{i} >> /etc/hosts" 
+  end
+  
+  config.vm.define "s1" do |server|
+    server.vm.hostname = "Server1"
+    server.vm.network :private_network, ip: "#{SUBNET}.10"
+    server.vm.provision "shell", path: "./script/vmserver.sh" 
+    if sPath.to_s.length > 0 
+      server.vm.synced_folder sPath, "/home/vagrant/forVm"
     end
 
-      
-    config.vm.provider :virtualbox do |vb|
+    (1..NODE_COUNT).each do |i|
+      server.vm.provision "shell", inline: "echo n#{i} >> /etc/ansible/hosts" 
+    end
+
+    server.vm.provider :virtualbox do |vb|
         vb.customize [
           "modifyvm", :id,
-          "--cpuexecutioncap", "50",
-          "--memory", "512",
+          "--memory", "1024"
         ]
     end
   end 
   
-  NODE_COUNT.times do |i|
-    config.vm.define "node-#{i}" do |node|
-      node.vm.provision "shell",
-        inline: "echo hello from node #{i}"
-      config.vm.hostname = "centos7box#{i}"
-      config.vm.network :private_network, ip: "#{SUBNET}.1#{i}"
-      config.vm.provision "shell", path: "./script/vmhost.sh", args: ""
-      config.vm.box = "centos/7"
-      config.vm.provision "shell", inline: "echo #{SUBNET}.1 server-1 >> /etc/hosts", args: ""
-      NODE_COUNT.times do |i|
-        config.vm.provision "shell", inline: "echo #{SUBNET}.1#{i} node-#{i} >> /etc/hosts", args: ""
-      end
-    end
-
-    config.vm.provider :virtualbox do |vb|
+  (1..NODE_COUNT).each do |i|
+    config.vm.define "n#{i}" do |node|
+      node.vm.hostname = "Node#{i}"
+      node.vm.network :private_network, ip: "#{SUBNET}.1#{i}"
+    
+      node.vm.provider :virtualbox do |vb|
         vb.customize [
           "modifyvm", :id,
-          "--cpuexecutioncap", "50",
-          "--memory", "256",
+          "--memory", "256"
         ]
       end
+    end
   end
-
 end
